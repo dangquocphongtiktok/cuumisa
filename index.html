@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CỨU MISA | Vở Kịch Chuyển Động Đương Đại - Nhà Hát Kịch Thành Phố</title>
+  <meta name="description" content="Trang trải nghiệm kịch chuyển động đương đại 'CỨU MISA' - Hành trình giải phóng ẩn ức học đường qua ngôn ngữ hình thể và bức tường ký ức tuổi học trò.">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'theatre-void': '#05030a',
+            'theatre-purple': '#9d65ff',
+            'theatre-amber': '#ffcf87',
+            'theatre-dark-purple': '#12091c',
+            'theatre-card': '#160a26',
+          },
+          fontFamily: {
+            playfair: ['Playfair Display', 'serif'],
+            vietnam: ['Be Vietnam Pro', 'sans-serif'],
+            handwriting: ['Dancing Script', 'cursive'],
+            cinzel: ['Playfair Display', 'serif'],
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float-slow': 'float 6s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-12px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Google Fonts Preconnect & Subsets (100% Vietnamese Character Support) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,600&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- GSAP & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- Lenis Smooth Scroll -->
+  <script src="https://unpkg.com/lenis@1.1.9/dist/lenis.min.js"></script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-theatre-void text-slate-100 antialiased selection:bg-purple-900/60 selection:text-amber-200">
+
+  <!-- Film Grain Overlay -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- Mouse Spotlight Follower -->
+  <div id="cursor-spotlight" aria-hidden="true"></div>
+
+  <!-- Scroll Progress Indicator -->
+  <div class="fixed top-0 left-0 right-0 h-[3px] bg-white/[0.05] z-50">
+    <div id="scroll-progress" class="h-full bg-gradient-to-r from-theatre-purple via-theatre-amber to-theatre-purple w-0 transition-all duration-75"></div>
+  </div>
+
+  <!-- ==========================================================================
+       HEADER & NAVIGATION BAR (GIẤU NỔI THANH THOÁT TRỰC TIẾP TRONG ẢNH)
+       Không viền đen, không logo, không nút âm thanh, căn giữa hoàn mỹ
+       ========================================================================== -->
+  <header id="main-header" class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 pointer-events-none">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 pt-5 sm:pt-6 flex items-center justify-center">
+      
+      <!-- Desktop Navigation Menu (Floating Directly Inside Hero Photo) -->
+      <nav class="pointer-events-auto hidden md:flex items-center gap-7 lg:gap-9 px-8 py-2.5 rounded-full bg-black/30 backdrop-blur-md border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
+        <a href="#hero-section" class="text-xs uppercase tracking-[0.2em] text-gray-200 hover:text-theatre-amber font-vietnam font-medium transition-colors drop-shadow">Cứu Misa</a>
+        <a href="#block-about" class="text-xs uppercase tracking-[0.2em] text-gray-200 hover:text-theatre-amber font-vietnam font-medium transition-colors drop-shadow">Vở Diễn</a>
+        <a href="#block-letters-wall" class="text-xs uppercase tracking-[0.2em] text-gray-200 hover:text-theatre-amber font-vietnam font-medium transition-colors drop-shadow">Bức Tường Ký Ức</a>
+        <a href="#block-compose" class="text-xs uppercase tracking-[0.2em] text-theatre-amber hover:text-amber-300 font-vietnam font-semibold transition-colors drop-shadow">Gửi Thư</a>
+      </nav>
+
+      <!-- Mobile Menu Trigger -->
+      <div class="md:hidden flex w-full justify-end pointer-events-auto">
+        <button id="mobile-menu-btn" class="p-2.5 rounded-full bg-black/40 backdrop-blur-md border border-white/10 text-purple-200 hover:text-white" aria-label="Menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Dropdown -->
+    <div id="mobile-menu" class="pointer-events-auto hidden md:hidden mx-4 mt-2 px-6 py-5 rounded-2xl bg-theatre-void/95 border border-purple-500/20 backdrop-blur-xl space-y-4 shadow-2xl">
+      <a href="#hero-section" class="block text-xs uppercase tracking-[0.2em] text-gray-200 hover:text-theatre-amber font-vietnam font-medium">Cứu Misa</a>
+      <a href="#block-about" class="block text-xs uppercase tracking-[0.2em] text-gray-200 hover:text-theatre-amber font-vietnam font-medium">Vở Diễn</a>
+      <a href="#block-letters-wall" class="block text-xs uppercase tracking-[0.2em] text-gray-200 hover:text-theatre-amber font-vietnam font-medium">Bức Tường Ký Ức</a>
+      <a href="#block-compose" class="block text-xs uppercase tracking-[0.2em] text-theatre-amber font-vietnam font-semibold">Gửi Thư Tuổi Học Trò</a>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       BLOCK 1: HERO SCROLLYTELLING (h-screen, 100vh)
+       Block 2 kế liền Block 1 luôn - Hoàn toàn không có khoảng trống
+       ========================================================================== -->
+  <section id="hero-section" class="relative h-screen w-full overflow-hidden flex items-center justify-center bg-theatre-void z-10">
+    
+    <!-- Canvas for Bear Sequence Animation (cuumisa1.png -> cuumisa57.png) + Ellipse Ripples & 45 Physics Particles -->
+    <canvas id="misaHeroCanvas" class="absolute inset-0 w-full h-full block z-0"></canvas>
+
+    <!-- Theatre Ambient Vignette & Gradient Overlays for Cinematic Depth -->
+    <div class="absolute inset-0 pointer-events-none z-10 bg-gradient-to-t from-theatre-void/85 via-transparent to-transparent"></div>
+
+    <!-- Scrollytelling Typography Overlay (Phases fade with progress, placed safely in lower third) -->
+    <div id="hero-text-overlay" class="absolute inset-x-0 bottom-0 z-30 pointer-events-none flex flex-col justify-end items-center pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8">
+      
+      <!-- Phase 1: 0% - 25% Scroll (Overture / Gấu ngước nhìn lên) -->
+      <div id="hero-phase-1" class="text-center max-w-4xl mx-auto space-y-2 transition-opacity duration-300 pointer-events-none pb-2">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-theatre-void/80 border border-purple-500/30 backdrop-blur-md shadow-lg shadow-purple-950/60 pointer-events-auto">
+          <span class="w-1.5 h-1.5 rounded-full bg-theatre-amber animate-ping"></span>
+          <span class="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-theatre-amber font-vietnam font-semibold">Nhà Hát Kịch Thành Phố</span>
+        </div>
+
+        <p class="text-xs sm:text-sm text-purple-200/90 font-vietnam font-light sm:whitespace-nowrap drop-shadow-md">
+          “Không đứa trẻ nào chọn trở thành phiên bản của mình sau những tổn thương”
+        </p>
+      </div>
+
+      <!-- Phase 2: 35% - 70% Scroll (Đã bỏ text theo yêu cầu để không che gương mặt gấu) -->
+      <div id="hero-phase-2" class="hidden pointer-events-none" aria-hidden="true"></div>
+
+      <!-- Phase 3: 75% - 100% Scroll (Đã giấu theo yêu cầu để giữ cảnh kịch thuần khiết) -->
+      <div id="hero-phase-3" class="hidden pointer-events-none" aria-hidden="true"></div>
+
+    </div>
+
+    <!-- Antigravity Mode Button (Đã giấu giao diện theo yêu cầu, phím tắt A vẫn khả dụng) -->
+    <div class="hidden pointer-events-none" aria-hidden="true">
+      <button id="antigravity-toggle-btn" type="button" class="hidden"></button>
+    </div>
+
+    <!-- Live Scroll Progress Pill Indicator (Đã giấu theo yêu cầu) -->
+    <div class="hidden pointer-events-none" aria-hidden="true">
+      <span id="hero-progress-label"></span>
+      <div id="hero-progress-bar"></div>
+    </div>
+
+  </section>
+
+  <!-- ==========================================================================
+       BLOCK 2: VỞ DIỄN — CHỦ ĐỀ, HÌNH THỨC & MỤC TIÊU NGHỆ THUẬT (KẾ LIỀN BLOCK 1)
+       ========================================================================== -->
+  <section id="block-about" class="relative pt-16 pb-24 px-4 sm:px-6 lg:px-8 border-t border-purple-500/10 bg-[#05030a] z-20 shadow-[0_-40px_80px_rgba(5,3,10,1)]">
+    <span id="block-3acts" class="absolute -top-20" aria-hidden="true"></span>
+    
+    <!-- Ambient ambient spots -->
+    <div class="absolute top-1/4 -left-32 w-96 h-96 bg-purple-700/10 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute bottom-10 -right-32 w-96 h-96 bg-amber-500/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10">
+      
+      <!-- ======================================================================
+           HÀNG TRÊN CÙNG: CĂN GIỮA (TEXT-CENTER) — ĐỘC LẬP & THOÁNG ĐÃNG
+           ====================================================================== -->
+      <div class="text-center max-w-3xl mx-auto mb-16 sm:mb-20 space-y-3">
+        <div class="inline-flex items-center justify-center gap-3">
+          <span class="w-8 h-[1px] bg-amber-300"></span>
+          <span class="text-xs uppercase tracking-[0.3em] text-theatre-purple font-vietnam font-semibold">Tuyên Ngôn Nghệ Thuật</span>
+          <span class="w-8 h-[1px] bg-amber-300"></span>
+        </div>
+        <h2 id="block-2-title" class="text-4xl sm:text-6xl font-playfair font-bold text-white tracking-tight leading-tight">
+          Vở Diễn <span class="text-theatre-amber">“CỨU MISA”</span>
+        </h2>
+        <p class="text-[#e9d5ff] text-base sm:text-lg font-vietnam font-light leading-relaxed max-w-xl mx-auto">
+          Tác phẩm kịch hình thể thể nghiệm đương đại — <strong class="text-white font-medium">Nhà hát Kịch Thành Phố</strong>
+        </p>
+      </div>
+
+      <!-- ======================================================================
+           BỐ CỤC SÂN KHẤU 3 CỘT ĐỐI XỨNG CÂN BẰNG TUYỆT ĐỐI (1:1 SYMMETRICAL STAGE)
+           ====================================================================== -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-start">
+        
+        <!-- CỘT TRÁI (4 CỘT - lg:col-span-4 lg:text-right text-left): 01 / CHỦ ĐỀ VỞ DIỄN -->
+        <div class="stage-col-left lg:col-span-4 space-y-4 lg:text-right text-left flex flex-col justify-start">
+          
+          <!-- Thanh line vàng kim mảnh w-12 h-[2px] đối xứng hướng tâm -->
+          <div class="flex items-center gap-3 lg:justify-end justify-start mb-1">
+            <span class="text-xs uppercase tracking-[0.25em] text-amber-300 font-mono font-semibold">01 / Chủ Đề Vở Diễn</span>
+            <span class="w-12 h-[2px] bg-amber-300"></span>
+          </div>
+
+          <!-- Tiêu đề 1 dòng duy nhất -->
+          <h3 class="text-2xl sm:text-2xl lg:text-[1.75rem] font-playfair font-bold text-white tracking-tight leading-snug">
+            <span class="whitespace-nowrap">Bạo Lực Học Đường</span>
+          </h3>
+
+          <!-- Câu trích dẫn nghệ thuật đối xứng với cột phải (khóa cố định 1 hàng duy nhất) -->
+          <blockquote class="my-2 py-0.5">
+            <p class="font-handwriting text-lg sm:text-xl lg:text-[1.3rem] xl:text-[1.4rem] text-[#fde68a] leading-snug drop-shadow-md whitespace-nowrap">
+              “Nỗi đau câm lặng giấu kín sau cánh cổng trường.”
+            </p>
+          </blockquote>
+
+          <!-- Đoạn văn mô tả (độ dài cân đối 100% với cột phải) -->
+          <p class="text-sm sm:text-base text-[#e9d5ff] font-vietnam font-light leading-relaxed">
+            Vở diễn trực diện bước vào góc khuất gai góc nhất của tuổi học trò: bạo lực học đường — không chỉ là va đập thể xác, mà là sự cô lập tinh thần, áp lực nặng nề và những tổn thương kéo dài trong câm lặng.
+          </p>
+
+          <!-- Tagline phụ đối xứng -->
+          <div class="pt-2">
+            <span class="inline-block text-xs uppercase tracking-widest text-purple-300/80 font-mono">
+              Áp Lực Vô Hình &bull; Vết Rạn Tâm Lý
+            </span>
+          </div>
+        </div>
+
+        <!-- CỘT GIỮA (4 CỘT - lg:col-span-4): GẤU MISA Ở TÂM ĐỐI XỨNG, HÒA TAN MỊN 100% (KHÔNG LỘ VIỀN) -->
+        <div class="lg:col-span-4 flex justify-center items-center my-6 lg:my-0">
+          <div class="relative w-full max-w-[380px] aspect-[16/10] flex items-center justify-center mx-auto">
+            
+            <!-- Quầng sáng ambient tím & hổ phách dịu phía sau -->
+            <div class="absolute inset-0 bg-radial from-purple-600/30 via-amber-500/10 to-transparent blur-3xl pointer-events-none"></div>
+
+            <!-- Khung hình gấu Misa với mặt nạ elip viền mềm nhiều lớp (loại bỏ hoàn toàn viền vuông) -->
+            <div 
+              class="relative w-full h-full overflow-hidden" 
+              style="-webkit-mask-image: radial-gradient(ellipse 48% 46% at 50% 50%, #000 25%, rgba(0,0,0,0.8) 55%, transparent 92%); mask-image: radial-gradient(ellipse 48% 46% at 50% 50%, #000 25%, rgba(0,0,0,0.8) 55%, transparent 92%);"
+            >
+              <img 
+                src="assets/block1/cuumisa57.png" 
+                alt="Chú gấu Misa úp mặt chạm nước - Trạng thái 100%" 
+                class="w-full h-full object-cover object-center pointer-events-none select-none transition-transform duration-700 hover:scale-105"
+                loading="lazy"
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- CỘT PHẢI (4 CỘT - lg:col-span-4 text-left): 02 / HÌNH THỨC THỂ HIỆN -->
+        <div class="stage-col-right lg:col-span-4 space-y-4 text-left flex flex-col justify-start">
+          
+          <!-- Thanh line vàng kim mảnh w-12 h-[2px] đối xứng -->
+          <div class="flex items-center gap-3 justify-start mb-1">
+            <span class="w-12 h-[2px] bg-amber-300"></span>
+            <span class="text-xs uppercase tracking-[0.25em] text-amber-300 font-mono font-semibold">02 / Hình Thức Thể Hiện</span>
+          </div>
+
+          <!-- Tiêu đề 1 dòng duy nhất (không rớt chữ Thể) -->
+          <h3 class="text-2xl sm:text-2xl lg:text-[1.75rem] font-playfair font-bold text-white tracking-tight leading-snug">
+            <span class="whitespace-nowrap">Kể Chuyện Bằng Hình Thể</span>
+          </h3>
+
+          <!-- Câu trích dẫn nghệ thuật cỡ lớn màu vàng sáng (#fde68a) (khóa cố định 1 hàng duy nhất) -->
+          <blockquote class="my-2 py-0.5">
+            <p class="font-handwriting text-base sm:text-lg lg:text-[1.2rem] xl:text-[1.3rem] text-[#fde68a] leading-snug drop-shadow-md whitespace-nowrap">
+              “Cơ thể lưu giữ những điều ngôn ngữ không thể diễn tả.”
+            </p>
+          </blockquote>
+
+          <!-- Đoạn văn mô tả (độ dài cân đối 100% với cột trái) -->
+          <p class="text-sm sm:text-base text-[#e9d5ff] font-vietnam font-light leading-relaxed">
+            Khi ngôn từ trở nên bất lực hoặc bị cấm đoán, cơ thể trở thành nhân chứng trung thực nhất. Mọi ẩn ức, giằng xé và khát vọng tự do đều được giải mã qua từng động tác chuyển động hình thể không lời.
+          </p>
+
+          <!-- Tagline phụ đối xứng -->
+          <div class="pt-2">
+            <span class="inline-block text-xs uppercase tracking-widest text-purple-300/80 font-mono">
+              Giải Mã Ẩn Ức &bull; Chuyển Động Tự Do
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ======================================================================
+           DẢI TRUNG TÂM CÂN ĐỐI: MỤC TIÊU VỞ DIỄN (TUYÊN NGÔN NHÂN VĂN)
+           ====================================================================== -->
+      <div class="mt-14 max-w-2xl mx-auto text-center border-t border-purple-500/20 pt-8">
+        <div class="inline-flex items-center justify-center gap-3 mb-2">
+          <span class="w-8 h-[1px] bg-amber-300"></span>
+          <span class="text-xs uppercase tracking-[0.25em] text-amber-300 font-mono font-semibold">Mục Tiêu Vở Diễn</span>
+          <span class="w-8 h-[1px] bg-amber-300"></span>
+        </div>
+        <p class="font-vietnam text-base sm:text-lg text-white font-light leading-relaxed">
+          “Không phán xét ai đúng sai, mà cùng nhìn thấy điều đã tạo nên những đứa trẻ ấy.”
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       BLOCK 3: NHỮNG BỨC THƯ GỬI TUỔI HỌC TRÒ (THE MEMORY WALL)
+       ========================================================================== -->
+  <section id="block-letters-wall" class="relative py-28 px-4 sm:px-6 lg:px-8 bg-theatre-void border-t border-purple-500/10">
+    <div class="max-w-7xl mx-auto">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+        <div class="max-w-2xl space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-theatre-amber/10 border border-theatre-amber/30 text-theatre-amber text-xs font-vietnam font-semibold tracking-wider">
+            <span>Hòm Thư Ký Ức Khán Giả</span>
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-playfair font-bold text-white">
+            Những Bức Thư <span class="text-theatre-amber">Gửi Tuổi Học Trò</span>
+          </h2>
+          <p class="text-gray-300 text-sm sm:text-base font-vietnam font-light">
+            Nơi cất giữ những lời tự tình chưa từng dám thổ lộ. Hãy đọc chậm rãi để nhận ra bạn chưa từng cô độc giữa giông bão tuổi trẻ.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <span id="letters-count-badge" class="px-4 py-2 rounded-xl bg-purple-950/60 border border-purple-500/30 text-xs font-mono text-purple-200">
+            6 Bức thư
+          </span>
+          <a href="#block-compose" class="px-5 py-2.5 rounded-xl bg-theatre-amber text-slate-950 font-vietnam font-semibold text-xs tracking-wider hover:bg-amber-300 transition-colors flex items-center gap-2 shadow-lg shadow-amber-400/20">
+            <i data-lucide="feather" class="w-4 h-4"></i>
+            <span>Viết Thư Ngay</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Filter Tags Row -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+        <button 
+          type="button" 
+          data-filter="all"
+          class="letter-filter-tab px-4 py-2 rounded-full text-xs font-vietnam transition-all bg-theatre-amber text-slate-950 font-semibold shadow-md whitespace-nowrap tracking-wider"
+        >
+          Tất Cả Thư
+        </button>
+        <button 
+          type="button" 
+          data-filter="#GửiTôi17Tuổi"
+          class="letter-filter-tab px-4 py-2 rounded-full text-xs font-vietnam transition-all bg-purple-950/40 text-purple-300 hover:text-white border border-purple-900/50 whitespace-nowrap tracking-wider"
+        >
+          #GửiTôi17Tuổi
+        </button>
+        <button 
+          type="button" 
+          data-filter="#LờiChưaNói"
+          class="letter-filter-tab px-4 py-2 rounded-full text-xs font-vietnam transition-all bg-purple-950/40 text-purple-300 hover:text-white border border-purple-900/50 whitespace-nowrap tracking-wider"
+        >
+          #LờiChưaNói
+        </button>
+        <button 
+          type="button" 
+          data-filter="#ÁpLựcĐiểmSố"
+          class="letter-filter-tab px-4 py-2 rounded-full text-xs font-vietnam transition-all bg-purple-950/40 text-purple-300 hover:text-white border border-purple-900/50 whitespace-nowrap tracking-wider"
+        >
+          #ÁpLựcĐiểmSố
+        </button>
+        <button 
+          type="button" 
+          data-filter="#TìmLạiChínhMình"
+          class="letter-filter-tab px-4 py-2 rounded-full text-xs font-vietnam transition-all bg-purple-950/40 text-purple-300 hover:text-white border border-purple-900/50 whitespace-nowrap tracking-wider"
+        >
+          #TìmLạiChínhMình
+        </button>
+      </div>
+
+      <!-- Letters Grid (Rendered by JS) -->
+      <div id="letters-wall-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Rendered by letters.js -->
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       BLOCK 4: GỬI THƯ - BƯU CỤC THỜI GIAN (LETTER COMPOSER)
+       ========================================================================== -->
+  <section id="block-compose" class="relative py-28 px-4 sm:px-6 lg:px-8 border-t border-purple-500/10 bg-gradient-to-b from-theatre-void via-[#11071f] to-theatre-void">
+    
+    <!-- Ambient amber reading lamp glow in center -->
+    <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-[550px] h-[550px] bg-theatre-amber/10 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto relative z-10">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto mb-14 space-y-3">
+        <span class="text-xs uppercase tracking-[0.3em] text-theatre-amber font-vietnam font-semibold">Bưu Cục Thời Gian</span>
+        <h2 class="text-3xl sm:text-5xl font-playfair font-bold text-white">
+          Gửi Một Bức Thư <span class="text-theatre-purple">Cho Chính Bạn</span>
+        </h2>
+        <p class="text-gray-300 text-sm sm:text-base font-vietnam font-light">
+          Hãy thả trôi những gánh nặng mà bạn đã mang vác quá lâu. Thư của bạn sau khi niêm phong con dấu sáp sẽ được chuyển thẳng lên <span class="text-theatre-amber font-medium">Bức Tường Ký Ức (Block 3)</span> ngay lập tức.
+        </p>
+      </div>
+
+      <!-- Letter Desk Container -->
+      <div class="relative rounded-3xl p-6 sm:p-10 bg-gradient-to-b from-[#1b0d2e]/90 to-[#0e0618]/95 border border-purple-500/30 shadow-[0_20px_50px_rgba(5,3,10,0.8)] backdrop-blur-xl">
+        
+        <!-- Lamp spotlight line -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-1 bg-gradient-to-r from-transparent via-theatre-amber to-transparent"></div>
+
+        <form id="letter-submission-form" class="space-y-6">
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            
+            <!-- Author / Pen Name -->
+            <div class="space-y-2">
+              <label for="letter-author-input" class="block text-xs font-vietnam font-medium text-purple-200 tracking-wider">
+                Bút Danh / Tên Của Bạn
+              </label>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="letter-author-input" 
+                  placeholder="Ví dụ: Cựu học sinh 12A, hoặc Ẩn danh" 
+                  maxlength="50"
+                  class="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-purple-500/25 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-theatre-amber focus:ring-1 focus:ring-theatre-amber transition-all font-vietnam"
+                >
+                <i data-lucide="user" class="w-4 h-4 text-purple-400 absolute right-3.5 top-3.5 opacity-60"></i>
+              </div>
+            </div>
+
+            <!-- Recipient Target -->
+            <div class="space-y-2">
+              <label for="letter-recipient-input" class="block text-xs font-vietnam font-medium text-purple-200 tracking-wider">
+                Người Nhận Bức Thư
+              </label>
+              <div class="relative">
+                <input 
+                  type="text" 
+                  id="letter-recipient-input" 
+                  placeholder="Ví dụ: Gửi tôi năm 17 tuổi, Gửi bạn cùng bàn..." 
+                  maxlength="60"
+                  required
+                  class="w-full px-4 py-3 rounded-xl bg-white/[0.04] border border-purple-500/25 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-theatre-amber focus:ring-1 focus:ring-theatre-amber transition-all font-vietnam"
+                >
+                <i data-lucide="heart" class="w-4 h-4 text-purple-400 absolute right-3.5 top-3.5 opacity-60"></i>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Tag Selection -->
+          <div class="space-y-2">
+            <label for="letter-tag-input" class="block text-xs font-vietnam font-medium text-purple-200 tracking-wider">
+              Chủ Đề Cảm Xúc
+            </label>
+            <select 
+              id="letter-tag-input"
+              class="w-full px-4 py-3 rounded-xl bg-[#170a29] border border-purple-500/25 text-purple-100 text-sm focus:outline-none focus:border-theatre-amber focus:ring-1 focus:ring-theatre-amber transition-all font-vietnam"
+            >
+              <option value="#GửiTôi17Tuổi">#GửiTôi17Tuổi (Nói với quá khứ)</option>
+              <option value="#LờiChưaNói">#LờiChưaNói (Người bạn, thầy cô)</option>
+              <option value="#ÁpLựcĐiểmSố">#ÁpLựcĐiểmSố (Thi cử, gia đình)</option>
+              <option value="#TìmLạiChínhMình">#TìmLạiChínhMình (Tự chữa lành)</option>
+            </select>
+          </div>
+
+          <!-- Letter Message Body -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <label for="letter-content-input" class="block text-xs font-vietnam font-medium text-purple-200 tracking-wider">
+                Tâm Thư / Lời Muốn Nói
+              </label>
+              <span id="letter-char-counter" class="text-xs font-mono text-purple-400/70">0 / 600</span>
+            </div>
+            <textarea 
+              id="letter-content-input" 
+              rows="5" 
+              maxlength="600"
+              required
+              placeholder="Hãy viết những điều bạn chưa bao giờ dám nói ra... Cơ thể và tâm hồn bạn xứng đáng được lắng nghe..."
+              class="w-full px-4 py-3.5 rounded-xl bg-white/[0.04] border border-purple-500/25 text-gray-100 placeholder-gray-500 text-base font-handwriting tracking-wide focus:outline-none focus:border-theatre-amber focus:ring-1 focus:ring-theatre-amber transition-all leading-relaxed"
+            ></textarea>
+          </div>
+
+          <!-- Stamp & Seal Selection -->
+          <div class="space-y-3 pt-2">
+            <label class="block text-xs font-vietnam font-medium text-purple-200 tracking-wider">
+              Chọn Con Dấu Sáp Niêm Phong
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <button 
+                type="button" 
+                data-stamp="🕯️" 
+                data-stamp-name="Bình Yên"
+                class="stamp-select-btn p-3 rounded-xl bg-purple-950/60 border border-purple-500/30 flex items-center gap-3 transition-all ring-2 ring-amber-400 scale-105"
+              >
+                <span class="text-2xl">🕯️</span>
+                <div class="text-left">
+                  <strong class="block text-xs text-white font-medium">Bình Yên</strong>
+                  <span class="text-[10px] text-purple-300">Xoa dịu lòng</span>
+                </div>
+              </button>
+
+              <button 
+                type="button" 
+                data-stamp="🦋" 
+                data-stamp-name="Tự Do"
+                class="stamp-select-btn p-3 rounded-xl bg-purple-950/60 border border-purple-500/30 flex items-center gap-3 transition-all hover:border-purple-400"
+              >
+                <span class="text-2xl">🦋</span>
+                <div class="text-left">
+                  <strong class="block text-xs text-white font-medium">Tự Do</strong>
+                  <span class="text-[10px] text-purple-300">Phá vỡ kén</span>
+                </div>
+              </button>
+
+              <button 
+                type="button" 
+                data-stamp="🕊️" 
+                data-stamp-name="Thứ Tha"
+                class="stamp-select-btn p-3 rounded-xl bg-purple-950/60 border border-purple-500/30 flex items-center gap-3 transition-all hover:border-purple-400"
+              >
+                <span class="text-2xl">🕊️</span>
+                <div class="text-left">
+                  <strong class="block text-xs text-white font-medium">Thứ Tha</strong>
+                  <span class="text-[10px] text-purple-300">Buông bỏ đau</span>
+                </div>
+              </button>
+
+              <button 
+                type="button" 
+                data-stamp="⚡" 
+                data-stamp-name="Dũng Khí"
+                class="stamp-select-btn p-3 rounded-xl bg-purple-950/60 border border-purple-500/30 flex items-center gap-3 transition-all hover:border-purple-400"
+              >
+                <span class="text-2xl">⚡</span>
+                <div class="text-left">
+                  <strong class="block text-xs text-white font-medium">Dũng Khí</strong>
+                  <span class="text-[10px] text-purple-300">Dám là mình</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-4 text-center">
+            <button 
+              id="letter-submit-btn"
+              type="submit" 
+              class="w-full sm:w-auto px-10 py-4 rounded-full bg-gradient-to-r from-theatre-purple via-purple-700 to-theatre-amber text-white font-vietnam font-semibold text-sm tracking-widest uppercase hover:brightness-110 shadow-[0_0_30px_rgba(157,101,255,0.4)] transition-all flex items-center justify-center gap-3 mx-auto"
+            >
+              <i data-lucide="send" class="w-5 h-5"></i>
+              <span>Gửi Lên Bức Tường Ký Ức</span>
+            </button>
+            <p class="text-[11px] text-purple-300/60 mt-3 font-vietnam">
+              * Lá thư sẽ được chuyển ngay lập tức lên Block 3 và hiển thị nổi bật với hào quang vàng tím.
+            </p>
+          </div>
+
+        </form>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ==========================================================================
+       MODAL: FULL LETTER VIEW
+       ========================================================================== -->
+  <div id="letter-reading-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity">
+    <div class="relative w-full max-w-xl rounded-3xl p-8 bg-gradient-to-b from-[#1c0d30] to-[#0d0517] border border-theatre-amber/40 shadow-2xl text-left">
+      
+      <!-- Close Button -->
+      <button id="modal-close-btn" class="absolute top-5 right-5 p-2 rounded-full bg-white/[0.05] hover:bg-white/[0.1] text-gray-300 hover:text-white transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Modal Content -->
+      <div class="flex items-center gap-4 mb-6 pb-4 border-b border-purple-900/40">
+        <div id="modal-stamp" class="wax-seal wax-seal-amber text-2xl">🕯️</div>
+        <div>
+          <h3 id="modal-recipient" class="text-xl font-playfair font-bold text-theatre-amber">Gửi tôi năm 17 tuổi</h3>
+          <p class="text-xs text-purple-300 font-vietnam">
+            Bởi <span id="modal-author" class="text-white font-medium">Ẩn danh</span> &bull; <span id="modal-date" class="text-gray-400">12:00</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="mb-6 max-h-[60vh] overflow-y-auto pr-2">
+        <p id="modal-content" class="font-handwriting text-2xl text-gray-100 leading-relaxed tracking-wide">
+          <!-- Text inserted via JS -->
+        </p>
+      </div>
+
+      <div class="flex items-center justify-between pt-4 border-t border-purple-900/40">
+        <span id="modal-tag" class="text-xs font-mono text-purple-300 bg-purple-900/40 px-3 py-1 rounded-full border border-purple-500/20">#GửiTôi17Tuổi</span>
+        <span class="text-xs text-theatre-amber/80 font-vietnam">Nhà Hát Kịch Thành Phố &bull; Cứu Misa</span>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       TOAST FEEDBACK NOTIFICATION
+       ========================================================================== -->
+  <div 
+    id="letter-toast" 
+    class="fixed bottom-8 right-8 z-50 max-w-md p-4 rounded-2xl bg-gradient-to-r from-purple-950 via-[#1e0e35] to-[#0f061d] border border-theatre-amber/50 shadow-2xl shadow-purple-950 flex items-start gap-3 transform translate-y-20 opacity-0 pointer-events-none transition-all duration-500"
+  >
+    <div class="w-9 h-9 rounded-full bg-theatre-amber/20 border border-theatre-amber/50 flex items-center justify-center flex-shrink-0 text-theatre-amber">
+      <i data-lucide="check" class="w-5 h-5"></i>
+    </div>
+    <div>
+      <h5 class="text-sm font-vietnam font-bold text-theatre-amber">Đã Gửi Thành Công!</h5>
+      <p id="letter-toast-message" class="text-xs text-gray-200 font-vietnam mt-0.5">
+        Bức thư của bạn đã được niêm phong và gửi lên Bức Tường Ký Ức.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer class="border-t border-purple-900/30 bg-[#030206] py-16 px-4 sm:px-6 lg:px-8 text-gray-400 font-vietnam text-xs">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+      
+      <!-- Brand & Manifesto -->
+      <div class="md:col-span-2 space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-full bg-theatre-purple/30 border border-theatre-purple flex items-center justify-center text-theatre-amber font-playfair font-bold text-xs">
+            CM
+          </div>
+          <span class="text-base font-playfair font-bold text-white tracking-wider">CỨU MISA</span>
+        </div>
+        <p class="text-gray-400 font-light leading-relaxed max-w-md">
+          Vở kịch chuyển động đương đại thể nghiệm được dàn dựng bởi <strong>Nhà hát Kịch Thành Phố</strong>. Một nỗ lực nghệ thuật nhằm đưa tiếng nói sức khỏe tâm thần và cảm xúc học đường lên sân khấu đương đại.
+        </p>
+        <p class="text-theatre-amber/80 text-[11px] font-vietnam tracking-widest uppercase">
+          TÔNG MÀU CHỦ ĐẠO: OBSIDIAN VOID (#05030A) &bull; ELECTRIC VIOLET (#9D65FF) &bull; WARM AMBER (#FFCF87)
+        </p>
+      </div>
+
+      <!-- Schedule & Venue -->
+      <div class="space-y-3">
+        <h5 class="text-xs uppercase tracking-widest text-white font-vietnam font-semibold">Lịch Diễn & Địa Điểm</h5>
+        <ul class="space-y-2 text-gray-400">
+          <li class="flex items-start gap-2">
+            <i data-lucide="calendar" class="w-4 h-4 text-theatre-amber flex-shrink-0 mt-0.5"></i>
+            <span>Các tối Thứ Sáu & Thứ Bảy hàng tuần</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="clock" class="w-4 h-4 text-theatre-purple flex-shrink-0 mt-0.5"></i>
+            <span>Suất 19:30 & 21:00</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="map-pin" class="w-4 h-4 text-theatre-amber flex-shrink-0 mt-0.5"></i>
+            <span>Sân khấu thể nghiệm - Nhà hát Kịch Thành Phố</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact & Social -->
+      <div class="space-y-3">
+        <h5 class="text-xs uppercase tracking-widest text-white font-vietnam font-semibold">Kết Nối Với Chúng Tôi</h5>
+        <p class="text-gray-400">Đơn vị tổ chức: Nhà hát Kịch Thành Phố</p>
+        <div class="flex items-center gap-3 pt-2">
+          <a href="#" class="w-9 h-9 rounded-full bg-white/[0.05] border border-purple-500/20 flex items-center justify-center text-purple-300 hover:text-theatre-amber hover:border-theatre-amber transition-colors">
+            <i data-lucide="facebook" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full bg-white/[0.05] border border-purple-500/20 flex items-center justify-center text-purple-300 hover:text-theatre-amber hover:border-theatre-amber transition-colors">
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+          </a>
+          <a href="#" class="w-9 h-9 rounded-full bg-white/[0.05] border border-purple-500/20 flex items-center justify-center text-purple-300 hover:text-theatre-amber hover:border-theatre-amber transition-colors">
+            <i data-lucide="youtube" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Copyright -->
+    <div class="max-w-7xl mx-auto pt-8 border-t border-white/[0.05] flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-gray-400">
+      <p>&copy; 2026 Nhà hát Kịch Thành Phố. Bản quyền tác phẩm sân khấu "CỨU MISA". All rights reserved.</p>
+      <div class="flex items-center gap-6 text-purple-300/70">
+        <a href="#hero-section" class="hover:text-theatre-amber">Về Đầu Trang</a>
+        <span>&bull;</span>
+        <a href="#block-letters-wall" class="hover:text-theatre-amber">Bức Tường Ký Ức</a>
+        <span>&bull;</span>
+        <a href="#block-compose" class="hover:text-theatre-amber">Gửi Thư</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+  <script src="js/scrollytelling.js"></script>
+  <script src="js/letters.js"></script>
+</body>
+</html>

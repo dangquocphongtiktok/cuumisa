@@ -1,0 +1,304 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,600&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600&display=swap');
+
+/* ==========================================================================
+   Base Styles & Reset
+   ========================================================================== */
+:root {
+  --bg-dark: #05030a;
+  --purple-glow: #9d65ff;
+  --purple-deep: #160a26;
+  --amber-warm: #ffcf87;
+  --amber-glow: rgba(255, 207, 135, 0.4);
+  --text-main: #f5f0ff;
+  --text-muted: #a39bb8;
+}
+
+html {
+  scroll-behavior: auto !important; /* Managed by Lenis */
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: 'Be Vietnam Pro', sans-serif;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: #05030a;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  selection-background-color: #9d65ff;
+  selection-color: #ffffff;
+}
+
+::selection {
+  background: rgba(157, 101, 255, 0.35);
+  color: #ffcf87;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #05030a;
+}
+::-webkit-scrollbar-thumb {
+  background: #25143a;
+  border-radius: 9999px;
+  border: 1px solid rgba(157, 101, 255, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9d65ff;
+}
+
+/* ==========================================================================
+   Typography Classes (Tất cả font đều hỗ trợ 100% đầy đủ dấu Tiếng Việt)
+   ========================================================================== */
+.font-cinzel {
+  font-family: 'Playfair Display', 'Be Vietnam Pro', serif;
+}
+
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-vietnam {
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+.font-handwriting {
+  font-family: 'Dancing Script', cursive;
+}
+
+/* ==========================================================================
+   Atmospheric Lighting & Glow Effects
+   ========================================================================== */
+.glow-purple {
+  text-shadow: 0 0 20px rgba(157, 101, 255, 0.6), 0 0 40px rgba(157, 101, 255, 0.25);
+}
+
+.glow-amber {
+  text-shadow: 0 0 20px rgba(255, 207, 135, 0.6), 0 0 40px rgba(255, 207, 135, 0.25);
+}
+
+.box-glow-purple {
+  box-shadow: 0 0 30px -5px rgba(157, 101, 255, 0.3), inset 0 0 15px rgba(157, 101, 255, 0.1);
+}
+
+.box-glow-amber {
+  box-shadow: 0 0 35px -5px rgba(255, 207, 135, 0.35), inset 0 0 15px rgba(255, 207, 135, 0.1);
+}
+
+.spotlight-radial {
+  background: radial-gradient(circle at 50% 50%, rgba(157, 101, 255, 0.15) 0%, rgba(5, 3, 10, 0.95) 75%);
+}
+
+.theatre-curtain-glow {
+  background: radial-gradient(ellipse at 50% 0%, rgba(157, 101, 255, 0.2) 0%, rgba(255, 207, 135, 0.05) 40%, rgba(5, 3, 10, 1) 85%);
+}
+
+/* Noise overlay for cinematic film grain */
+.grain-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* Glassmorphism */
+.glass-panel {
+  background: rgba(18, 9, 30, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(157, 101, 255, 0.18);
+}
+
+.glass-panel-hover {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(28, 14, 48, 0.85);
+  border-color: rgba(255, 207, 135, 0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 15px 35px -10px rgba(157, 101, 255, 0.3);
+}
+
+/* Custom interactive mouse aura */
+#cursor-spotlight {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 500px;
+  height: 500px;
+  pointer-events: none;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(157, 101, 255, 0.08) 0%, rgba(255, 207, 135, 0.03) 40%, transparent 70%);
+  z-index: 40;
+  transition: opacity 0.5s ease;
+}
+
+/* ==========================================================================
+   Block Specific Styles
+   ========================================================================== */
+
+/* Scrollytelling Pin Layer Container */
+.scrolly-container {
+  position: relative;
+  width: 100%;
+}
+
+.scrolly-step {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Silhouette Mask & Fog Animation */
+.theatre-fog {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(157, 101, 255, 0.12) 0%, transparent 70%);
+  animation: fogBreathe 8s ease-in-out infinite alternate;
+}
+
+@keyframes fogBreathe {
+  0% { transform: scale(1) translateY(0); opacity: 0.6; }
+  100% { transform: scale(1.15) translateY(-20px); opacity: 0.95; }
+}
+
+/* Letter Cards & Vintage Paper Touch */
+.parchment-card {
+  background: linear-gradient(135deg, rgba(26, 14, 40, 0.92) 0%, rgba(15, 8, 25, 0.95) 100%);
+  border: 1px solid rgba(157, 101, 255, 0.22);
+  position: relative;
+  overflow: hidden;
+}
+
+.parchment-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffcf87, #9d65ff, transparent);
+  opacity: 0.6;
+}
+
+/* Wax Seal Style */
+.wax-seal {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.3), inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.wax-seal-amber {
+  background: radial-gradient(circle at 35% 35%, #ffe6b0 0%, #ffcf87 40%, #c4892c 85%, #7a4f0d 100%);
+  color: #3b2203;
+}
+
+.wax-seal-purple {
+  background: radial-gradient(circle at 35% 35%, #d5b8ff 0%, #9d65ff 40%, #682ece 85%, #35107a 100%);
+  color: #170438;
+}
+
+.wax-seal:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Newly added letter glow animation */
+@keyframes newLetterPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 207, 135, 0.8), 0 0 30px rgba(157, 101, 255, 0.6);
+    transform: scale(1.02);
+  }
+  50% {
+    box-shadow: 0 0 40px 10px rgba(255, 207, 135, 0.4), 0 0 60px rgba(157, 101, 255, 0.4);
+    transform: scale(1.03);
+  }
+  100% {
+    box-shadow: 0 0 20px 0 rgba(255, 207, 135, 0.2), 0 0 30px rgba(157, 101, 255, 0.2);
+    transform: scale(1);
+  }
+}
+
+.letter-just-added {
+  animation: newLetterPulse 2.5s cubic-bezier(0.16, 1, 0.3, 1) 3;
+  border-color: #ffcf87 !important;
+}
+
+/* Sound Wave Animation */
+.sound-wave-bar {
+  animation: soundBar 1.2s ease-in-out infinite alternate;
+}
+
+.sound-wave-bar:nth-child(2) { animation-delay: 0.2s; }
+.sound-wave-bar:nth-child(3) { animation-delay: 0.4s; }
+.sound-wave-bar:nth-child(4) { animation-delay: 0.6s; }
+
+@keyframes soundBar {
+  0% { height: 4px; }
+  100% { height: 18px; }
+}
+
+/* Shimmer gradient text */
+.text-shimmer {
+  background: linear-gradient(90deg, #ffcf87 0%, #ffffff 40%, #9d65ff 70%, #ffcf87 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: 200% center;
+  }
+}
+
+/* ==========================================================================
+   BLOCK 2: Frameless Cinematic Stage (A24 Film Style) - Bright 100% Opacity
+   ========================================================================== */
+#block-about .stage-col-left,
+#block-about .stage-col-right,
+#block-about h2,
+#block-about h3,
+#block-about p,
+#block-about blockquote,
+#block-about blockquote p,
+#block-about span {
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+#block-about h2,
+#block-about h3 {
+  color: #ffffff !important;
+}
+
+#block-about p {
+  color: #e9d5ff !important;
+}
+
+#block-about blockquote,
+#block-about blockquote p {
+  color: #fde68a !important;
+  opacity: 1 !important;
+}
+
