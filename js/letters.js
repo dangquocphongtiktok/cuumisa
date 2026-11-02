@@ -41,7 +41,7 @@ const DEFAULT_LETTERS = [
     recipient: 'Gửi cha mẹ',
     tag: '#TìmLạiChínhMình',
     content:
-      'Con biết chiếc áo blouse trắng hay tấm bằng bác sĩ là ước mơ của ba mẹ. Nhưng con xin lỗi vì đã không thể khoác vừa nó. Tối nay xem vở kịch "Cứu Misa", thấy hình ảnh diễn viên quằn quại tháo chiếc cà vạt, con đã bật khóc nức nở. Con mong một ngày ba mẹ có thể nhìn vào đôi mắt con, thay vì bảng điểm.',
+      'Con biết chiếc áo blouse trắng hay tấm bằng bác sĩ là ước mơ của ba mẹ. Nhưng con xin lỗi vì đã không thể khoác vừa nó.',
     stamp: '⚡',
     stampName: 'Dũng Khí',
     date: '23:04 - 30/10',
