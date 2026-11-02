@@ -1,11 +1,35 @@
 /**
  * LETTERS.JS - CỨU MISA Landing Page
  * Block 3 (Bức tường ký ức) & Block 4 (Bưu cục thời gian - Gửi thư)
- * LocalStorage management, Live Real-time Submission, Empathy Reaction & Modals
+ * Realtime Cloud Firestore Integration + LocalStorage Cache + Empathy Likes + Modals
  */
 
 const STORAGE_KEY = 'CUU_MISA_LETTERS_V1';
 const LIKES_KEY = 'CUU_MISA_LIKED_IDS_V1';
+
+// Firebase Cloud Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyA5B0HIDPUQD77jKUMwocP0HSZyVa4J92g",
+  authDomain: "cuumisa-3d7d0.firebaseapp.com",
+  projectId: "cuumisa-3d7d0",
+  storageBucket: "cuumisa-3d7d0.firebasestorage.app",
+  messagingSenderId: "954174061829",
+  appId: "1:954174061829:web:5e7f31a3062ad8434d8b6c",
+  measurementId: "G-87PQHN4B73"
+};
+
+// Initialize Firebase & Firestore safely
+let db = null;
+try {
+  if (typeof firebase !== 'undefined') {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    db = firebase.firestore();
+  }
+} catch (err) {
+  console.warn('Firebase init error, running in local fallback mode:', err);
+}
 
 // Preset High-End Emotional Letters
 const DEFAULT_LETTERS = [
@@ -93,24 +117,31 @@ const DEFAULT_LETTERS = [
 class LettersManager {
   constructor() {
     this.letters = [];
+    this.cloudLetters = [];
     this.currentFilter = 'all';
     this.likedIds = new Set();
     this.init();
   }
 
   init() {
+    // 1. Instant local load (zero blank screen delay)
     this.loadFromStorage();
     this.renderWall();
+
+    // 2. Setup interactive controls
     this.setupFilterTabs();
     this.setupForm();
     this.setupModal();
+
+    // 3. Connect real-time Firestore synchronization
+    this.listenToFirestore();
   }
 
   loadFromStorage() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       const customLetters = stored ? JSON.parse(stored) : [];
-      // Custom letters go first, then defaults
+      this.cloudLetters = customLetters;
       this.letters = [...customLetters, ...DEFAULT_LETTERS];
 
       const likedStored = localStorage.getItem(LIKES_KEY);
@@ -123,31 +154,117 @@ class LettersManager {
     }
   }
 
-  saveCustomLetter(newLetter) {
+  listenToFirestore() {
+    if (!db) return;
+    try {
+      db.collection('letters')
+        .orderBy('createdAt', 'desc')
+        .onSnapshot(
+          (snapshot) => {
+            const fetched = [];
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              fetched.push({
+                id: doc.id,
+                author: data.author || 'Người gửi ẩn danh',
+                recipient: data.recipient || 'Gửi chính mình năm ấy',
+                tag: data.tag || '#GửiTôi17Tuổi',
+                content: data.content || '',
+                stamp: data.stamp || '🕯️',
+                stampName: data.stampName || 'Bình Yên',
+                date: data.date || 'Gần đây',
+                likes: typeof data.likes === 'number' ? data.likes : 0,
+                isCustom: true,
+              });
+            });
+
+            this.cloudLetters = fetched;
+            // Update local cache for offline reliability
+            try {
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(fetched));
+            } catch (err) {}
+
+            this.combineAndRender();
+          },
+          (error) => {
+            console.warn('Firestore real-time sync note:', error.message);
+          }
+        );
+    } catch (e) {
+      console.warn('Could not attach Firestore listener:', e);
+    }
+  }
+
+  combineAndRender(highlightId = null) {
+    // Deduplicate: letters from cloud first, then defaults
+    this.letters = [...this.cloudLetters, ...DEFAULT_LETTERS];
+    this.renderWall(highlightId);
+  }
+
+  async saveCustomLetter(newLetter) {
+    // 1. Immediately cache locally
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       const customLetters = stored ? JSON.parse(stored) : [];
       customLetters.unshift(newLetter);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(customLetters));
-      this.letters.unshift(newLetter);
+      this.cloudLetters.unshift(newLetter);
+      this.combineAndRender(newLetter.id);
     } catch (e) {
       console.error('Save error', e);
     }
+
+    // 2. Persist to Firestore Cloud
+    if (db) {
+      try {
+        const docRef = await db.collection('letters').add({
+          author: newLetter.author,
+          recipient: newLetter.recipient,
+          tag: newLetter.tag,
+          content: newLetter.content,
+          stamp: newLetter.stamp,
+          stampName: newLetter.stampName,
+          date: newLetter.date,
+          likes: newLetter.likes || 1,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        newLetter.id = docRef.id;
+        return docRef.id;
+      } catch (err) {
+        console.warn('Cloud save fallback note (saved locally):', err);
+      }
+    }
+    return newLetter.id;
   }
 
   toggleLike(letterId) {
-    const letter = this.letters.find((l) => l.id === letterId);
-    if (!letter) return;
+    const isLiked = this.likedIds.has(letterId);
 
-    if (this.likedIds.has(letterId)) {
+    if (isLiked) {
       this.likedIds.delete(letterId);
-      letter.likes = Math.max(0, letter.likes - 1);
     } else {
       this.likedIds.add(letterId);
-      letter.likes += 1;
     }
 
     localStorage.setItem(LIKES_KEY, JSON.stringify(Array.from(this.likedIds)));
+
+    const letter = this.letters.find((l) => l.id === letterId);
+    if (letter) {
+      letter.likes = Math.max(0, letter.likes + (isLiked ? -1 : 1));
+    }
+
+    // Update in Firestore if this is a cloud-persisted letter
+    if (db && letter && !letterId.startsWith('letter-00')) {
+      try {
+        db.collection('letters')
+          .doc(letterId)
+          .update({
+            likes: firebase.firestore.FieldValue.increment(isLiked ? -1 : 1),
+          })
+          .catch((e) => console.warn('Could not sync like to cloud:', e));
+      } catch (e) {}
+    }
+
     this.renderWall();
   }
 
@@ -181,7 +298,6 @@ class LettersManager {
       .map((letter) => {
         const isLiked = this.likedIds.has(letter.id);
         const isHighlight = letter.id === highlightId;
-        const isCustom = letter.isCustom;
 
         return `
         <div class="parchment-card rounded-2xl p-6 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl hover:border-amber-400/40 relative group ${
@@ -315,7 +431,7 @@ class LettersManager {
     }
 
     // Submit handler
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const authorInput = document.getElementById('letter-author-input');
@@ -336,11 +452,11 @@ class LettersManager {
 
       // Format Date
       const now = new Date();
-      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} - Vừa xong`;
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} - ${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-      const newId = 'letter-' + Date.now();
+      const tempId = 'letter-' + Date.now();
       const newLetter = {
-        id: newId,
+        id: tempId,
         author: author,
         recipient: recipient,
         tag: tag,
@@ -355,52 +471,50 @@ class LettersManager {
       // Button flying animation state
       submitBtn.disabled = true;
       submitBtn.innerHTML = `
-        <span class="inline-block animate-spin mr-2">✦</span> Đang đóng dấu sáp & gửi thư...
+        <span class="inline-block animate-spin mr-2">✦</span> Đang lưu vào Bức Tường Ký Ức...
       `;
 
+      // Save to Cloud Firestore & LocalStorage
+      const finalId = await this.saveCustomLetter(newLetter);
+
+      // Reset filter to 'all' so new letter is guaranteed visible
+      this.currentFilter = 'all';
+      const allTab = document.querySelector('.letter-filter-tab[data-filter="all"]');
+      if (allTab) {
+        document.querySelectorAll('.letter-filter-tab').forEach((t) => {
+          t.classList.remove('bg-amber-400', 'text-slate-950', 'font-semibold');
+          t.classList.add('bg-purple-950/40', 'text-purple-300');
+        });
+        allTab.classList.add('bg-amber-400', 'text-slate-950', 'font-semibold');
+      }
+
+      // Re-render wall with highlight
+      this.renderWall(finalId || tempId);
+
+      // Reset form
+      form.reset();
+      if (charCounter) charCounter.textContent = '0 / 600';
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = `
+        <i data-lucide="send" class="w-5 h-5"></i>
+        <span>Gửi Lên Bức Tường Ký Ức</span>
+      `;
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+
+      // Show Toast Feedback
+      this.showToast('Lá thư của bạn đã được niêm phong và lưu vĩnh viễn trên Bức Tường Ký Ức!');
+
+      // Smooth scroll to Block 3 to view the new letter
       setTimeout(() => {
-        // Save to state & storage
-        this.saveCustomLetter(newLetter);
-
-        // Reset filter to 'all' so new letter is guaranteed visible
-        this.currentFilter = 'all';
-        const allTab = document.querySelector('.letter-filter-tab[data-filter="all"]');
-        if (allTab) {
-          document.querySelectorAll('.letter-filter-tab').forEach((t) => {
-            t.classList.remove('bg-amber-400', 'text-slate-950', 'font-semibold');
-            t.classList.add('bg-purple-950/40', 'text-purple-300');
-          });
-          allTab.classList.add('bg-amber-400', 'text-slate-950', 'font-semibold');
-        }
-
-        // Re-render wall with highlight
-        this.renderWall(newId);
-
-        // Reset form
-        form.reset();
-        if (charCounter) charCounter.textContent = '0 / 600';
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = `
-          <i data-lucide="send" class="w-5 h-5"></i>
-          <span>Gửi Lên Bức Tường Ký Ức</span>
-        `;
-        if (typeof lucide !== 'undefined') lucide.createIcons();
-
-        // Show Toast Feedback
-        this.showToast('Lá thư của bạn đã được niêm phong và gửi lên Bức Tường Ký Ức thành công!');
-
-        // Smooth scroll to Block 3 to view the new letter
-        setTimeout(() => {
-          const block3 = document.getElementById('block-letters-wall');
-          if (block3) {
-            if (window.lenis) {
-              window.lenis.scrollTo(block3, { offset: -70, duration: 1.8 });
-            } else {
-              block3.scrollIntoView({ behavior: 'smooth' });
-            }
+        const block3 = document.getElementById('block-letters-wall');
+        if (block3) {
+          if (window.lenis) {
+            window.lenis.scrollTo(block3, { offset: -70, duration: 1.8 });
+          } else {
+            block3.scrollIntoView({ behavior: 'smooth' });
           }
-        }, 500);
-      }, 900);
+        }
+      }, 500);
     });
   }
 
