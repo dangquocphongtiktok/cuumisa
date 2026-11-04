@@ -35,15 +35,10 @@ class MisaHeroCanvasController {
     this.height = 0;
     this.dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-    // Lưu kích thước hiển thị của hình ảnh trên canvas để định vị vũng nước
+    // Lưu kích thước hiển thị của hình ảnh trên canvas
     this.imgMetrics = { dx: 0, dy: 0, dw: 0, dh: 0 };
 
-    // (1) HỆ THỐNG VÒNG SÓNG NƯỚC ĐỒNG TÂM (CONCENTRIC ELLIPSE RIPPLES)
-    this.ripples = [];
-    this.lastRippleSpawnTime = 0;
-    this.lastMouseRippleTime = 0;
-
-    // (2) HỆ THỐNG 45 HẠT VẬT LÝ (MƯA RƠI / ĐỐM SÁNG KÝ ỨC ANTIGRAVITY)
+    // HỆ THỐNG 45 HẠT VẬT LÝ (MƯA RƠI / ĐỐM SÁNG KÝ ỨC ANTIGRAVITY)
     this.particleCount = 45;
     this.particles = [];
     this.antigravityMode = false;
@@ -61,7 +56,6 @@ class MisaHeroCanvasController {
     this.initParticles();
     this.preloadFrames();
     this.bindScroll();
-    this.bindMouseEvents();
     this.setupAntigravityMode();
     this.startRenderLoop();
   }
@@ -168,25 +162,6 @@ class MisaHeroCanvasController {
     updateTarget();
   }
 
-  bindMouseEvents() {
-    const onMove = (e) => {
-      const now = performance.now();
-      if (now - this.lastMouseRippleTime < 70) return;
-
-      const rect = this.canvas.getBoundingClientRect();
-      const clientX = e.clientX - rect.left;
-      const clientY = e.clientY - rect.top;
-
-      // Kích hoạt sóng nước elip khi chuột di chuyển trong vùng sàn kịch
-      if (clientY > this.height * 0.35) {
-        this.spawnRipple(clientX, clientY, 95 + Math.random() * 45, true);
-        this.lastMouseRippleTime = now;
-      }
-    };
-
-    window.addEventListener('mousemove', onMove, { passive: true });
-  }
-
   setupAntigravityMode() {
     window.toggleAntigravity = () => {
       this.antigravityMode = !this.antigravityMode;
@@ -238,40 +213,6 @@ class MisaHeroCanvasController {
         speedMultiplier: Math.random() * 0.5 + 0.8,
       });
     }
-  }
-
-  getPuddleCenter() {
-    const { dx, dy, dw, dh } = this.imgMetrics;
-    if (dw > 0 && dh > 0) {
-      return {
-        x: dx + dw * 0.48,
-        y: dy + dh * 0.84,
-      };
-    }
-    return {
-      x: this.width * 0.5,
-      y: this.height * 0.82,
-    };
-  }
-
-  spawnRipple(x, y, maxR = 140, isMouse = false) {
-    if (this.ripples.length > 25) {
-      this.ripples.shift();
-    }
-
-    const isAmber = Math.random() > 0.45;
-    const color = isAmber ? '255, 207, 135' : '157, 101, 255';
-
-    this.ripples.push({
-      x: x,
-      y: y,
-      r: isMouse ? 6 : 3,
-      maxR: maxR + Math.random() * 35,
-      speed: isMouse ? (2.2 + Math.random() * 1.0) : (1.6 + Math.random() * 1.0),
-      color: color,
-      alpha: 0.85,
-      aspectRatio: 0.32,
-    });
   }
 
   // Thuật toán scale ảnh hoàn hảo: Bảo toàn trọn vẹn 100% cả đỉnh ảnh (chữ "Cứu") VÀ đáy ảnh (chân gấu, vũng nước, bóng phản chiếu)
@@ -329,60 +270,7 @@ class MisaHeroCanvasController {
     }
   }
 
-  // (1) Cập nhật & Vẽ Vòng sóng nước đồng tâm (Ellipse Ripples)
-  updateAndDrawRipples(progress) {
-    const now = performance.now();
-
-    // Tự động kích hoạt sóng nước khi progress > 0.75 (lúc gấu vừa úp mặt chạm nước trước ngưỡng Block 2)
-    if (progress > 0.75) {
-      const spawnInterval = Math.max(160, 400 - (progress - 0.75) * 600);
-      if (now - this.lastRippleSpawnTime > spawnInterval) {
-        const puddle = this.getPuddleCenter();
-        const jitterX = (Math.random() - 0.5) * 35;
-        const jitterY = (Math.random() - 0.5) * 12;
-        this.spawnRipple(puddle.x + jitterX, puddle.y + jitterY, 150 + Math.random() * 55);
-        this.lastRippleSpawnTime = now;
-      }
-    }
-
-    if (!this.ripples.length) return;
-
-    this.ctx.save();
-    for (let i = this.ripples.length - 1; i >= 0; i--) {
-      const rip = this.ripples[i];
-      rip.r += rip.speed;
-      const progressFraction = rip.r / rip.maxR;
-      rip.alpha = Math.max(0, (1 - progressFraction) * 0.85);
-
-      if (rip.r >= rip.maxR || rip.alpha <= 0.01) {
-        this.ripples.splice(i, 1);
-        continue;
-      }
-
-      // Vòng ngoài chính
-      this.ctx.beginPath();
-      this.ctx.ellipse(rip.x, rip.y, rip.r, rip.r * rip.aspectRatio, 0, 0, Math.PI * 2);
-      this.ctx.strokeStyle = `rgba(${rip.color}, ${rip.alpha.toFixed(3)})`;
-      this.ctx.lineWidth = 1.6;
-      this.ctx.shadowColor = `rgba(${rip.color}, 0.5)`;
-      this.ctx.shadowBlur = 8;
-      this.ctx.stroke();
-
-      // Vòng trong đồng tâm thứ hai (tạo độ gợn sóng nước kịch nghệ)
-      if (rip.r > 18) {
-        const innerR = rip.r * 0.65;
-        const innerAlpha = rip.alpha * 0.65;
-        this.ctx.beginPath();
-        this.ctx.ellipse(rip.x, rip.y, innerR, innerR * rip.aspectRatio, 0, 0, Math.PI * 2);
-        this.ctx.strokeStyle = `rgba(${rip.color}, ${innerAlpha.toFixed(3)})`;
-        this.ctx.lineWidth = 1.0;
-        this.ctx.stroke();
-      }
-    }
-    this.ctx.restore();
-  }
-
-  // (2) Cập nhật & Vẽ Hệ thống 45 Hạt vật lý (Mưa rơi / Đốm sáng ký ức Antigravity)
+  // Cập nhật & Vẽ Hệ thống 45 Hạt vật lý (Mưa rơi / Đốm sáng ký ức Antigravity)
   updateAndDrawParticles(progress) {
     const isAntigravity = this.antigravityMode || this.isScrollingUp;
 
@@ -401,14 +289,6 @@ class MisaHeroCanvasController {
         if (p.y > this.height + 25) {
           p.y = -25;
           p.x = Math.random() * this.width;
-
-          // Mưa rơi chạm vũng nước có xác suất tạo vi gợn sóng
-          if (progress > 0.6 && Math.random() < 0.12) {
-            const puddle = this.getPuddleCenter();
-            if (Math.abs(p.x - puddle.x) < 220) {
-              this.spawnRipple(p.x, puddle.y + (Math.random() - 0.5) * 15, 60);
-            }
-          }
         }
 
         // Vẽ vệt mưa sợi chỉ phát sáng
@@ -457,7 +337,7 @@ class MisaHeroCanvasController {
     this.ctx.restore();
   }
 
-  // Hiển thị khung hình mượt mà, sắc nét tuyệt đối, kết hợp Vòng sóng nước & 45 Hạt vật lý
+  // Hiển thị khung hình mượt mà, sắc nét tuyệt đối, kết hợp 45 Hạt vật lý
   renderBlended(progress) {
     if (!this.frames.length) return;
 
@@ -471,10 +351,7 @@ class MisaHeroCanvasController {
       this.drawCover(img);
     }
 
-    // (1) Vẽ Vòng sóng nước đồng tâm dưới vũng nước (khi rê chuột hoặc progress > 0.75)
-    this.updateAndDrawRipples(progress);
-
-    // (2) Vẽ Hệ thống 45 Hạt vật lý (Rơi xuống như mưa hoặc bay ngược lên như đốm sáng)
+    // Vẽ Hệ thống 45 Hạt vật lý (Rơi xuống như mưa hoặc bay ngược lên như đốm sáng)
     this.updateAndDrawParticles(progress);
   }
 
