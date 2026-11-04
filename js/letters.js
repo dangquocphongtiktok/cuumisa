@@ -118,6 +118,7 @@ class LettersManager {
   constructor() {
     this.letters = [];
     this.cloudLetters = [];
+    this.localLetters = [];
     this.currentFilter = 'all';
     this.likedIds = new Set();
     this.init();
@@ -126,7 +127,6 @@ class LettersManager {
   init() {
     // 1. Instant local load (zero blank screen delay)
     this.loadFromStorage();
-    this.renderWall();
 
     // 2. Setup interactive controls
     this.setupFilterTabs();
@@ -140,9 +140,8 @@ class LettersManager {
   loadFromStorage() {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      const customLetters = stored ? JSON.parse(stored) : [];
-      this.cloudLetters = customLetters;
-      this.letters = [...customLetters, ...DEFAULT_LETTERS];
+      this.localLetters = stored ? JSON.parse(stored) : [];
+      this.combineAndRender();
 
       const likedStored = localStorage.getItem(LIKES_KEY);
       if (likedStored) {
@@ -150,7 +149,8 @@ class LettersManager {
       }
     } catch (e) {
       console.error('Storage parse error, using defaults', e);
-      this.letters = [...DEFAULT_LETTERS];
+      this.localLetters = [];
+      this.combineAndRender();
     }
   }
 
@@ -179,42 +179,80 @@ class LettersManager {
             });
 
             this.cloudLetters = fetched;
-            // Update local cache for offline reliability
+
+            // Remove any local letters that are already stored in Firestore
+            const cloudContents = new Set(fetched.map((l) => `${l.author}__${l.content}`));
+            this.localLetters = (this.localLetters || []).filter(
+              (l) => !cloudContents.has(`${l.author}__${l.content}`) && !fetched.some((c) => c.id === l.id)
+            );
             try {
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(fetched));
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(this.localLetters));
             } catch (err) {}
+
+            // Auto-sync any remaining local letters to Firestore
+            this.syncPendingLocalLetters();
 
             this.combineAndRender();
           },
           (error) => {
             console.warn('Firestore real-time sync note:', error.message);
+            // Even if Firestore is disabled or offline, preserve all local letters!
+            this.combineAndRender();
           }
         );
     } catch (e) {
       console.warn('Could not attach Firestore listener:', e);
+      this.combineAndRender();
+    }
+  }
+
+  async syncPendingLocalLetters() {
+    if (!db || !this.localLetters || this.localLetters.length === 0) return;
+    for (const letter of [...this.localLetters]) {
+      try {
+        const docRef = await db.collection('letters').add({
+          author: letter.author,
+          recipient: letter.recipient,
+          tag: letter.tag,
+          content: letter.content,
+          stamp: letter.stamp,
+          stampName: letter.stampName,
+          date: letter.date,
+          likes: letter.likes || 1,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        });
+        // Once synced, remove from local queue
+        this.localLetters = this.localLetters.filter((l) => l.id !== letter.id);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(this.localLetters));
+        } catch (err) {}
+      } catch (err) {
+        break; // Stop sync attempt if Firestore is still disabled/offline
+      }
     }
   }
 
   combineAndRender(highlightId = null) {
-    // Deduplicate: letters from cloud first, then defaults
-    this.letters = [...this.cloudLetters, ...DEFAULT_LETTERS];
+    // Merge cloud letters + unique local letters + preset defaults
+    const cloudIds = new Set((this.cloudLetters || []).map((l) => l.id));
+    const uniqueLocal = (this.localLetters || []).filter((l) => !cloudIds.has(l.id));
+
+    this.letters = [...this.cloudLetters, ...uniqueLocal, ...DEFAULT_LETTERS];
     this.renderWall(highlightId);
   }
 
   async saveCustomLetter(newLetter) {
-    // 1. Immediately cache locally
+    // 1. Immediately cache locally so letter is NEVER lost
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      const customLetters = stored ? JSON.parse(stored) : [];
-      customLetters.unshift(newLetter);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(customLetters));
-      this.cloudLetters.unshift(newLetter);
+      this.localLetters = this.localLetters || [];
+      this.localLetters.unshift(newLetter);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.localLetters));
       this.combineAndRender(newLetter.id);
     } catch (e) {
       console.error('Save error', e);
     }
 
-    // 2. Persist to Firestore Cloud
+    // 2. Persist to Firestore Cloud if available
     if (db) {
       try {
         const docRef = await db.collection('letters').add({
@@ -229,6 +267,13 @@ class LettersManager {
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         });
         newLetter.id = docRef.id;
+
+        // Remove from local queue since it's now safely in cloud
+        this.localLetters = this.localLetters.filter((l) => l.id !== newLetter.id && l.id !== newLetter.tempId);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(this.localLetters));
+        } catch (err) {}
+
         return docRef.id;
       } catch (err) {
         console.warn('Cloud save fallback note (saved locally):', err);
