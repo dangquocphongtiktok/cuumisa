@@ -222,8 +222,8 @@
             <span class="whitespace-normal sm:whitespace-nowrap">Bạo Lực Tuổi Thanh Thiếu Niên</span>
           </h3>
 
-          <!-- Câu trích dẫn nghệ thuật đối xứng với cột phải -->
-          <blockquote class="my-2 py-0.5">
+          <!-- Câu trích dẫn nghệ thuật đối xứng với cột phải (đồng bộ chiều cao min-h để thẳng hàng đoạn văn) -->
+          <blockquote class="my-2 py-0.5 lg:min-h-[3.75rem] flex items-center lg:justify-end">
             <p class="font-handwriting text-base sm:text-lg lg:text-[1.2rem] xl:text-[1.3rem] text-[#fde68a] leading-snug drop-shadow-md text-balance">
               “Có những tổn thương vô hình hóa thành bạo lực từ chính những điều mà chúng ta chẳng hay.”
             </p>
@@ -235,19 +235,19 @@
           </p>
         </div>
 
-        <!-- CỘT GIỮA (4 CỘT - lg:col-span-4): GẤU MISA Ở TÂM ĐỐI XỨNG, HÒA TAN MỊN 100% (KHÔNG LỘ VIỀN) -->
-        <div class="lg:col-span-4 flex justify-center items-center my-6 lg:my-0">
-          <div class="relative w-full max-w-[380px] aspect-[16/10] flex items-center justify-center mx-auto">
+        <!-- CỘT GIỮA (4 CỘT - lg:col-span-4): TÁC PHẨM CỨU MISA Ở TÂM ĐỐI XỨNG CÂN BẰNG HOÀN HẢO -->
+        <div class="lg:col-span-4 flex justify-center items-center my-6 lg:my-0 self-center">
+          <div class="relative w-full max-w-[340px] sm:max-w-[380px] xl:max-w-[400px] aspect-square flex items-center justify-center mx-auto group">
             
-            <!-- Khung hình gấu Misa với mặt nạ elip viền mềm nhiều lớp (loại bỏ hoàn toàn viền vuông) -->
-            <div 
-              class="relative w-full h-full overflow-hidden" 
-              style="-webkit-mask-image: radial-gradient(ellipse 48% 46% at 50% 50%, #000 25%, rgba(0,0,0,0.8) 55%, transparent 92%); mask-image: radial-gradient(ellipse 48% 46% at 50% 50%, #000 25%, rgba(0,0,0,0.8) 55%, transparent 92%);"
-            >
+            <!-- Quầng sáng tím nghệ thuật huyền ảo phía sau tranh -->
+            <div class="absolute -inset-3 bg-gradient-to-tr from-purple-700/25 via-indigo-600/15 to-purple-900/20 rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+
+            <!-- Khung tranh nghệ thuật Cứu Misa -->
+            <div class="relative w-full h-full rounded-2xl overflow-hidden border border-purple-500/25 shadow-[0_12px_40px_rgba(0,0,0,0.8),0_0_35px_rgba(168,85,247,0.18)] bg-[#07050d] transition-transform duration-700 group-hover:scale-[1.02]">
               <img 
-                src="assets/block1/cuumisa57.png" 
-                alt="Chú gấu Misa úp mặt chạm nước - Trạng thái 100%" 
-                class="w-full h-full object-cover object-center pointer-events-none select-none transition-transform duration-700 hover:scale-105"
+                src="assets/cuumisa-artwork.jpg" 
+                alt="Tác phẩm nghệ thuật Cứu Misa - Cô bé ôm chú gấu tím trong làn nước" 
+                class="w-full h-full object-cover object-center pointer-events-none select-none"
                 loading="lazy"
               >
             </div>
@@ -268,8 +268,8 @@
             <span class="whitespace-normal sm:whitespace-nowrap">Kể Chuyện Bằng Hình Thể</span>
           </h3>
 
-          <!-- Câu trích dẫn nghệ thuật cỡ lớn màu vàng sáng (#fde68a) (khóa cố định 1 hàng duy nhất trên desktop) -->
-          <blockquote class="my-2 py-0.5">
+          <!-- Câu trích dẫn nghệ thuật cỡ lớn màu vàng sáng (#fde68a) (khóa cố định 1 hàng duy nhất trên desktop, đồng bộ min-h) -->
+          <blockquote class="my-2 py-0.5 lg:min-h-[3.75rem] flex items-center justify-start">
             <p class="font-handwriting text-base sm:text-lg lg:text-[1.2rem] xl:text-[1.3rem] text-[#fde68a] leading-snug drop-shadow-md whitespace-normal sm:whitespace-nowrap">
               “Cơ thể lưu giữ những điều ngôn ngữ không thể diễn tả.”
             </p>
