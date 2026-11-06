@@ -500,17 +500,18 @@
       </div>
 
       <!-- ======================================================================
-           BỐ CỤC SÂN KHẤU 3 CỘT ĐỐI XỨNG CÂN BẰNG TUYỆT ĐỐI (1:1 SYMMETRICAL STAGE)
+           BỐ CỤC NGHỆ THUẬT CAO CẤP BẤT ĐỐI XỨNG (STAGGERED LUXURY EDITORIAL)
+           Đường chéo thị giác: 01 (Trên cao) -> Ảnh Misa (Tâm) -> 02 (Lệch thấp)
            ====================================================================== -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-start">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-start relative">
         
-        <!-- CỘT TRÁI (4 CỘT - lg:col-span-4 lg:text-right text-left): 01 / CHỦ ĐỀ VỞ DIỄN -->
-        <div class="stage-col-left lg:col-span-4 space-y-4 lg:text-right text-left flex flex-col justify-start">
+        <!-- CỘT TRÁI (4 CỘT - lg:col-span-4): 01 / CHỦ ĐỀ VỞ DIỄN — NEO NỬA TRÊN (lg:self-start lg:pt-6) -->
+        <div class="stage-col-left lg:col-span-4 space-y-5 text-left flex flex-col justify-start lg:self-start lg:pt-6 max-w-[380px] lg:ml-auto">
           
-          <!-- Thanh line vàng kim mảnh w-12 h-[2px] đối xứng hướng tâm -->
-          <div class="flex items-center gap-3 lg:justify-end justify-start mb-1">
+          <!-- Thanh line vàng kim mảnh nối nhẹ từ tiêu đề hướng vào khung ảnh trung tâm -->
+          <div class="flex items-center gap-3 mb-1">
             <span class="text-xs uppercase tracking-[0.25em] text-amber-300 font-mono font-semibold">01 / Chủ Đề Vở Diễn</span>
-            <span class="w-12 h-[2px] bg-amber-300"></span>
+            <span class="flex-1 max-w-[80px] sm:max-w-[100px] h-[1px] bg-gradient-to-r from-amber-300/40 via-amber-300/15 to-transparent"></span>
           </div>
 
           <!-- Tiêu đề 1 dòng duy nhất -->
@@ -518,44 +519,48 @@
             <span class="whitespace-normal sm:whitespace-nowrap">Bạo Lực Tuổi Thanh Thiếu Niên</span>
           </h3>
 
-          <!-- Câu trích dẫn nghệ thuật đối xứng với cột phải (đồng bộ chiều cao min-h để thẳng hàng đoạn văn) -->
-          <blockquote class="my-2 py-0.5 lg:min-h-[3.75rem] flex items-center lg:justify-end">
-            <p class="font-handwriting text-base sm:text-lg lg:text-[1.2rem] xl:text-[1.3rem] text-[#fde68a] leading-snug drop-shadow-md text-balance">
+          <!-- Câu trích dẫn: Font Serif nghệ thuật in nghiêng, màu vàng kem (#fde68a), kèm watermark dấu ngoặc kép lớn mờ -->
+          <blockquote class="relative my-2 pl-5 pr-2 py-1 text-left">
+            <span class="quote-watermark absolute -top-5 -left-1 font-playfair text-6xl text-[#fde68a] pointer-events-none select-none font-bold" aria-hidden="true">“</span>
+            <p class="font-playfair italic text-lg sm:text-xl text-[#fde68a] leading-relaxed relative z-10">
               “Có những tổn thương vô hình hóa thành bạo lực từ chính những điều mà chúng ta chẳng hay.”
             </p>
           </blockquote>
 
-          <!-- Đoạn văn mô tả -->
-          <p class="text-sm sm:text-base text-[#e9d5ff] font-vietnam font-light leading-relaxed text-balance">
-            CỨU MISA không chỉ đặt ra vấn đề bạo lực học đường, mà đi sâu vào những nguyên nhân vô hình dẫn đến các tổn thương tâm lý ở thanh thiếu niên. Tác phẩm đề cao sự thấu hiểu, lắng nghe và trách nhiệm của gia đình, nhà trường và xã hội trong việc đồng hành cùng thế hệ trẻ.
-          </p>
+          <!-- Đoạn văn mô tả: Căn lề trái, max-w-[360px] ml-auto, đường kẻ dọc tím mảnh bên trái -->
+          <div class="max-w-[360px] lg:ml-auto text-left border-l border-purple-400/30 pl-4 py-1">
+            <p class="text-sm sm:text-base text-[#e9d5ff] font-vietnam font-light leading-relaxed">
+              CỨU MISA không chỉ đặt ra vấn đề bạo lực học đường, mà đi sâu vào những nguyên nhân vô hình dẫn đến các tổn thương tâm lý ở thanh thiếu niên. Tác phẩm đề cao sự thấu hiểu, lắng nghe và trách nhiệm của gia đình, nhà trường và xã hội trong việc đồng hành cùng thế hệ trẻ.
+            </p>
+          </div>
         </div>
 
-        <!-- CỘT GIỮA (4 CỘT - lg:col-span-4): TÁC PHẨM CỨU MISA Ở TÂM ĐỐI XỨNG CÂN BẰNG HOÀN HẢO -->
+        <!-- CỘT GIỮA (4 CỘT - lg:col-span-4): TÁC PHẨM CỨU MISA TRÀN VIỀN & HÒA TAN VÀO NỀN (NO BORDER BOX) -->
         <div class="lg:col-span-4 flex justify-center items-center my-6 lg:my-0 self-center">
-          <div class="relative w-full max-w-[340px] sm:max-w-[380px] xl:max-w-[400px] aspect-square flex items-center justify-center mx-auto group">
+          <div class="relative w-full max-w-[420px] sm:max-w-[460px] xl:max-w-[490px] aspect-square flex items-center justify-center mx-auto group">
             
-            <!-- Quầng sáng tím nghệ thuật huyền ảo phía sau tranh -->
-            <div class="absolute -inset-3 bg-gradient-to-tr from-purple-700/25 via-indigo-600/15 to-purple-900/20 rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none"></div>
+            <!-- Lớp radial-gradient tím trầm phát sáng nhẹ phía sau lưng nhân vật giúp vũng nước và nền tối tan biến vào nền đen -->
+            <div class="absolute -inset-10 bg-[radial-gradient(ellipse_at_center,_rgba(126,34,206,0.30)_0%,_rgba(67,24,142,0.18)_50%,_transparent_80%)] rounded-full blur-3xl pointer-events-none"></div>
 
-            <!-- Khung tranh nghệ thuật Cứu Misa -->
-            <div class="relative w-full h-full rounded-2xl overflow-hidden border border-purple-500/25 shadow-[0_12px_40px_rgba(0,0,0,0.8),0_0_35px_rgba(168,85,247,0.18)] bg-[#07050d] transition-transform duration-700 group-hover:scale-[1.02]">
+            <!-- Vùng ảnh trung tâm phóng lớn 15-20%, xóa hoàn toàn border và rounded, áp dụng mặt nạ hòa trộn viền mềm radial-gradient -->
+            <div class="relative w-full h-full overflow-hidden transition-transform duration-700 group-hover:scale-[1.03]"
+                 style="-webkit-mask-image: radial-gradient(ellipse 78% 82% at 50% 50%, black 55%, transparent 100%); mask-image: radial-gradient(ellipse 78% 82% at 50% 50%, black 55%, transparent 100%);">
               <img 
                 src="assets/cuumisa-artwork.jpg" 
                 alt="Tác phẩm nghệ thuật Cứu Misa - Cô bé ôm chú gấu tím trong làn nước" 
-                class="w-full h-full object-cover object-center pointer-events-none select-none"
+                class="w-full h-full object-cover object-center pointer-events-none select-none scale-105"
                 loading="lazy"
               >
             </div>
           </div>
         </div>
 
-        <!-- CỘT PHẢI (4 CỘT - lg:col-span-4 text-left): 02 / HÌNH THỨC THỂ HIỆN -->
-        <div class="stage-col-right lg:col-span-4 space-y-4 text-left flex flex-col justify-start">
+        <!-- CỘT PHẢI (4 CỘT - lg:col-span-4): 02 / HÌNH THỨC THỂ HIỆN — LỆCH THẤP XUỐNG DƯỚI (lg:mt-32 lg:pb-6) -->
+        <div class="stage-col-right lg:col-span-4 space-y-5 text-left flex flex-col justify-start lg:mt-28 xl:lg:mt-32 lg:pb-6 max-w-[380px] lg:mr-auto">
           
-          <!-- Thanh line vàng kim mảnh w-12 h-[2px] đối xứng -->
-          <div class="flex items-center gap-3 justify-start mb-1">
-            <span class="w-12 h-[2px] bg-amber-300"></span>
+          <!-- Thanh line vàng kim mảnh nối nhẹ từ tiêu đề hướng vào khung ảnh trung tâm -->
+          <div class="flex items-center gap-3 mb-1">
+            <span class="flex-1 max-w-[80px] sm:max-w-[100px] h-[1px] bg-gradient-to-l from-amber-300/40 via-amber-300/15 to-transparent"></span>
             <span class="text-xs uppercase tracking-[0.25em] text-amber-300 font-mono font-semibold">02 / Hình Thức Thể Hiện</span>
           </div>
 
@@ -564,17 +569,20 @@
             <span class="whitespace-normal sm:whitespace-nowrap">Kể Chuyện Bằng Hình Thể</span>
           </h3>
 
-          <!-- Câu trích dẫn nghệ thuật cỡ lớn màu vàng sáng (#fde68a) (khóa cố định 1 hàng duy nhất trên desktop, đồng bộ min-h) -->
-          <blockquote class="my-2 py-0.5 lg:min-h-[3.75rem] flex items-center justify-start">
-            <p class="font-handwriting text-base sm:text-lg lg:text-[1.2rem] xl:text-[1.3rem] text-[#fde68a] leading-snug drop-shadow-md whitespace-normal sm:whitespace-nowrap">
+          <!-- Câu trích dẫn: Font Serif nghệ thuật in nghiêng, màu vàng kem (#fde68a), kèm watermark dấu ngoặc kép lớn mờ -->
+          <blockquote class="relative my-2 pl-5 pr-2 py-1 text-left">
+            <span class="quote-watermark absolute -top-5 -left-1 font-playfair text-6xl text-[#fde68a] pointer-events-none select-none font-bold" aria-hidden="true">“</span>
+            <p class="font-playfair italic text-lg sm:text-xl text-[#fde68a] leading-relaxed relative z-10 whitespace-normal sm:whitespace-nowrap">
               “Cơ thể lưu giữ những điều ngôn ngữ không thể diễn tả.”
             </p>
           </blockquote>
 
-          <!-- Đoạn văn mô tả (độ dài cân đối 100% với cột trái - đúng 4 dòng) -->
-          <p class="text-sm sm:text-base text-[#e9d5ff] font-vietnam font-light leading-relaxed text-balance">
-            Khi ngôn từ trở nên bất lực hoặc bị cấm đoán, cơ thể trở thành nhân chứng trung thực nhất. Mọi ẩn ức, giằng xé và khát vọng tự do đều được giải mã qua từng động tác chuyển động hình thể không lời.
-          </p>
+          <!-- Đoạn văn mô tả: Căn lề trái, max-w-[360px], đường kẻ dọc tím mảnh bên trái -->
+          <div class="max-w-[360px] text-left border-l border-purple-400/30 pl-4 py-1">
+            <p class="text-sm sm:text-base text-[#e9d5ff] font-vietnam font-light leading-relaxed">
+              Khi ngôn từ trở nên bất lực hoặc bị cấm đoán, cơ thể trở thành nhân chứng trung thực nhất. Mọi ẩn ức, giằng xé và khát vọng tự do đều được giải mã qua từng động tác chuyển động hình thể không lời.
+            </p>
+          </div>
         </div>
 
       </div>
@@ -582,7 +590,7 @@
       <!-- ======================================================================
            DẢI TRUNG TÂM CÂN ĐỐI: MỤC TIÊU VỞ DIỄN (TUYÊN NGÔN NHÂN VĂN)
            ====================================================================== -->
-      <div class="mt-14 max-w-4xl mx-auto text-center border-t border-purple-500/20 pt-8">
+      <div class="mt-16 lg:mt-24 max-w-4xl mx-auto text-center border-t border-purple-500/20 pt-8">
         <div class="inline-flex items-center justify-center gap-3 mb-2">
           <span class="w-8 h-[1px] bg-amber-300"></span>
           <span class="text-xs uppercase tracking-[0.25em] text-amber-300 font-mono font-semibold">Mục Tiêu Vở Diễn</span>

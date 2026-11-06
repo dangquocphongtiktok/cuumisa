@@ -273,7 +273,7 @@ body {
 }
 
 /* ==========================================================================
-   BLOCK 2: Frameless Cinematic Stage (A24 Film Style) - Bright 100% Opacity
+   BLOCK 4: Editorial Stage (Staggered Luxury Editorial)
    ========================================================================== */
 #block-about .stage-col-left,
 #block-about .stage-col-right,
@@ -282,9 +282,15 @@ body {
 #block-about p,
 #block-about blockquote,
 #block-about blockquote p,
-#block-about span {
+#block-about span:not(.quote-watermark) {
   opacity: 1 !important;
   filter: none !important;
+}
+
+#block-about .quote-watermark {
+  opacity: 0.15 !important;
+  color: #fde68a !important;
+  line-height: 1 !important;
 }
 
 #block-about h2,
