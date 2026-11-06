@@ -357,12 +357,15 @@ class MisaHeroCanvasController {
 
   // Cập nhật chuyển động chữ & nhãn tiến trình đồng bộ theo progress
   updateTextOverlays(progress) {
-    // Phase 1: 0.0 -> 0.25 (Gấu ngước nhìn)
+    // Phase 1: 0.0 -> 0.45 (Gấu ngước nhìn & Đoạn giới thiệu Cứu Misa)
     if (this.phase1) {
-      const p1Opacity = Math.max(0, 1 - progress / 0.22);
+      let p1Opacity = 1;
+      if (progress > 0.12) {
+        p1Opacity = Math.max(0, 1 - (progress - 0.12) / 0.33);
+      }
       this.phase1.style.opacity = p1Opacity.toFixed(3);
-      this.phase1.style.pointerEvents = p1Opacity > 0.3 ? 'auto' : 'none';
-      this.phase1.style.transform = `translateY(${(-progress * 20).toFixed(1)}px)`;
+      this.phase1.style.pointerEvents = p1Opacity > 0.2 ? 'auto' : 'none';
+      this.phase1.style.transform = `translateY(${(-progress * 25).toFixed(1)}px)`;
     }
 
     // Phase 2: 0.30 -> 0.70 (Gấu bắt đầu cúi đầu)
