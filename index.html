@@ -138,24 +138,18 @@
     <div class="absolute inset-0 pointer-events-none z-10 bg-gradient-to-t from-theatre-void/85 via-transparent to-transparent"></div>
 
     <!-- Scrollytelling Typography Overlay (Phases fade with progress, placed safely in lower third) -->
-    <div id="hero-text-overlay" class="absolute inset-x-0 bottom-0 z-30 pointer-events-none flex flex-col justify-end items-center pb-4 sm:pb-8 px-4 sm:px-6 lg:px-8">
+    <div id="hero-text-overlay" class="absolute inset-x-0 bottom-0 z-30 pointer-events-none flex flex-col justify-end items-center pb-8 sm:pb-12 px-4 sm:px-6 lg:px-8">
       
-      <!-- Phase 1: 0% - 35% Scroll (Overture / Gấu ngước nhìn lên & Giới thiệu Cứu Misa) -->
-      <div id="hero-phase-1" class="text-center max-w-3xl mx-auto space-y-3 transition-opacity duration-300 pointer-events-auto pb-2">
-        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-theatre-void/85 border border-purple-500/30 backdrop-blur-md shadow-lg shadow-purple-950/60 pointer-events-auto">
+      <!-- Phase 1: 0% - 25% Scroll (Overture / Gấu ngước nhìn lên) -->
+      <div id="hero-phase-1" class="text-center max-w-4xl mx-auto space-y-2 transition-opacity duration-300 pointer-events-none pb-2">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-theatre-void/80 border border-purple-500/30 backdrop-blur-md shadow-lg shadow-purple-950/60 pointer-events-auto">
           <span class="w-1.5 h-1.5 rounded-full bg-theatre-amber animate-ping"></span>
           <span class="text-[10px] sm:text-xs uppercase tracking-[0.25em] text-theatre-amber font-vietnam font-semibold">Nhà Hát Kịch Thành Phố</span>
         </div>
 
-        <!-- Khung giới thiệu nghệ thuật Cứu Misa -->
-        <div class="p-4 sm:p-6 rounded-2xl bg-[#05030a]/80 backdrop-blur-md border border-purple-500/30 shadow-[0_12px_40px_rgba(0,0,0,0.8),0_0_30px_rgba(157,101,255,0.15)] text-left sm:text-center max-h-[38vh] sm:max-h-none overflow-y-auto pointer-events-auto">
-          <p class="text-xs sm:text-[13px] md:text-sm text-[#e9d5ff]/95 font-vietnam font-light leading-relaxed text-balance">
-            “Cứu Misa” không chỉ là một cái tên, mà là một tiếng vọng thầm kín từ sâu thẳm tâm hồn. Misa không phải ai xa lạ, đó chính là hiện thân của những tháng ngày tuổi thơ trong trẻo, là “đứa trẻ bên trong” vô cùng mỏng manh mà mỗi người lớn đều từng đi qua, và cũng là hình bóng của những đứa trẻ đang lớn lên từng ngày.
-            <span class="block mt-2">
-              “Cứu Misa” như một lời khẩn cầu tha thiết, một hồi chuông thức tỉnh gửi đến những người lớn chúng ta đang mải miết với vòng quay cuộc đời: Hãy dừng lại một chút, hãy thấu cảm và hành động. Đừng để sự vô tâm, cộc cằn hay những kỳ vọng áp đặt vô tình bóp nghẹt thế giới hồn nhiên ấy. Bởi sau cùng, cúi xuống ôm lấy và cứu vớt Misa không chỉ là che chở cho một thế hệ tương lai, mà còn là cách người lớn tự vỗ về, chữa lành cho chính đứa trẻ tổn thương vẫn luôn ẩn náu sâu trong cõi lòng của mỗi con người.
-            </span>
-          </p>
-        </div>
+        <p class="text-xs sm:text-sm text-purple-200/90 font-vietnam font-light sm:whitespace-nowrap drop-shadow-md">
+          “Không đứa trẻ nào chọn trở thành phiên bản của mình sau những tổn thương”
+        </p>
       </div>
 
       <!-- Phase 2: 35% - 70% Scroll (Đã bỏ text theo yêu cầu để không che gương mặt gấu) -->
@@ -180,9 +174,41 @@
   </section>
 
   <!-- ==========================================================================
+       BLOCK 1 (TIẾP NỐI): LỜI NGỎ — Ý NIỆM “CỨU MISA”
+       ========================================================================== -->
+  <section id="block-intro" class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-[#05030a] via-[#0d0618] to-theatre-void border-t border-purple-500/10 z-20 shadow-[0_-40px_80px_rgba(5,3,10,1)]">
+    
+    <!-- Ambient glow -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-purple-700/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+      
+      <div class="inline-flex items-center justify-center gap-3">
+        <span class="w-8 h-[1px] bg-amber-300"></span>
+        <span class="text-xs uppercase tracking-[0.3em] text-theatre-amber font-vietnam font-semibold">Thông Điệp Khởi Đầu</span>
+        <span class="w-8 h-[1px] bg-amber-300"></span>
+      </div>
+
+      <h3 class="text-2xl sm:text-3xl lg:text-4xl font-playfair font-bold text-white tracking-tight leading-snug">
+        Ý Niệm <span class="text-theatre-amber">“Cứu Misa”</span>
+      </h3>
+
+      <div class="p-6 sm:p-10 rounded-3xl bg-[#120822]/80 backdrop-blur-xl border border-purple-500/25 shadow-[0_20px_50px_rgba(5,3,10,0.8),0_0_40px_rgba(157,101,255,0.12)] text-left sm:text-center space-y-4">
+        <p class="text-sm sm:text-base lg:text-[1.05rem] text-[#e9d5ff] font-vietnam font-light leading-relaxed">
+          <strong class="text-white font-medium">“Cứu Misa”</strong> không chỉ là một cái tên, mà là một tiếng vọng thầm kín từ sâu thẳm tâm hồn. Misa không phải ai xa lạ, đó chính là hiện thân của những tháng ngày tuổi thơ trong trẻo, là <span class="text-theatre-amber font-medium">“đứa trẻ bên trong”</span> vô cùng mỏng manh mà mỗi người lớn đều từng đi qua, và cũng là hình bóng của những đứa trẻ đang lớn lên từng ngày.
+        </p>
+        <p class="text-sm sm:text-base lg:text-[1.05rem] text-[#e9d5ff] font-vietnam font-light leading-relaxed">
+          <strong class="text-white font-medium">“Cứu Misa”</strong> như một lời khẩn cầu tha thiết, một hồi chuông thức tỉnh gửi đến những người lớn chúng ta đang mải miết với vòng quay cuộc đời: Hãy dừng lại một chút, hãy thấu cảm và hành động. Đừng để sự vô tâm, cộc cằn hay những kỳ vọng áp đặt vô tình bóp nghẹt thế giới hồn nhiên ấy. Bởi sau cùng, cúi xuống ôm lấy và cứu vớt Misa không chỉ là che chở cho một thế hệ tương lai, mà còn là cách người lớn tự vỗ về, chữa lành cho chính đứa trẻ tổn thương vẫn luôn ẩn náu sâu trong cõi lòng của mỗi con người.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ==========================================================================
        BLOCK 2: NHỮNG BỨC THƯ GỬI TUỔI HỌC TRÒ (THE MEMORY WALL)
        ========================================================================== -->
-  <section id="block-letters-wall" class="relative py-28 px-4 sm:px-6 lg:px-8 bg-theatre-void border-t border-purple-500/10 z-20 shadow-[0_-40px_80px_rgba(5,3,10,1)]">
+  <section id="block-letters-wall" class="relative py-28 px-4 sm:px-6 lg:px-8 bg-theatre-void border-t border-purple-500/10">
     <div class="max-w-7xl mx-auto">
       
       <!-- Section Header -->
